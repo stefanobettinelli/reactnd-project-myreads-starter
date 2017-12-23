@@ -4,10 +4,13 @@ const Book = (props) => {
   const {title, authors, imageLinks, shelf} = props.book;
   const moveTo = props.moveTo;
 
+  if (imageLinks === undefined) {
+    console.log('stop');
+  }
   const style = {
     width: 128,
     height: 193,
-    backgroundImage: `url(${imageLinks.thumbnail})`
+    backgroundImage: `url(${imageLinks && (imageLinks.thumbnail || imageLinks.smallThumbnail)})`
   };
 
   return (
@@ -15,7 +18,7 @@ const Book = (props) => {
       <div className="book-top">
         <div className="book-cover" style={style}/>
         <div className="book-shelf-changer">
-          <select value={shelf} onChange={(e) => moveTo(props.book, e.target.value)}>
+          <select value={shelf || 'none'} onChange={(e) => moveTo(props.book, e.target.value)}>
             <option value="none" disabled>Move to...</option>
             <option value="currentlyReading" disabled={shelf === 'currentlyReading'}>Currently Reading</option>
             <option value="wantToRead" disabled={shelf === 'wantToRead'}>Want to Read</option>

@@ -6,7 +6,7 @@ const Book = (props) => {
   const style = {
     width: 128,
     height: 193,
-    backgroundImage: `url(${imageLinks && imageLinks.thumbnail})`
+    backgroundImage: `url(${imageLinks && (imageLinks.thumbnail || imageLinks.smallThumbnail)})`
   };
   return (
     <div className="book">
@@ -24,7 +24,7 @@ const Book = (props) => {
         </div>
       </div>
       <div className="book-title">{title}</div>
-      {authors.map((auth, ind) => <div key={ind} className="book-authors">{auth}</div>)}
+      {authors && authors.map((auth, ind) => <div key={ind} className="book-authors">{auth}</div>)}
     </div>
   );
 };

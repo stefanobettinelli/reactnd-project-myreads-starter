@@ -10,11 +10,14 @@ class Search extends Component {
   };
 
   updateQuery = (query) => {
+    const idToBookObj = this.props.idToBookObj;
     this.setState({query: query.trim()});
     if (query.length > 0) {
       BooksAPI.search(query).then(books => {
           if (books.length > 0) {
-            console.log(books);
+            books.forEach(book => {
+              idToBookObj[book.id] && (book.shelf = idToBookObj[book.id].shelf);
+            });
             this.setState({books});
           }
         }
@@ -42,7 +45,7 @@ class Search extends Component {
             {
               this.state.books.map(book =>
                 <li key={book.id}>
-                  <Book book={book} moveTo={this.props.moveTo}/>
+                  <Book book={book} changeShelf={this.props.changeShelf}/>
                 </li>
               )
             }

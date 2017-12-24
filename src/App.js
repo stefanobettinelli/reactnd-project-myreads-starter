@@ -7,50 +7,49 @@ import './App.css';
 
 class BooksApp extends React.Component {
   state = {
-    currentlyReading: [],
-    wantToRead: [],
-    read: []
+    idToBookObj: {}
   };
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      this.setState({
-        currentlyReading: books.filter((book) => book.shelf === 'currentlyReading'),
-        wantToRead: books.filter((book) => book.shelf === 'wantToRead'),
-        read: books.filter((book) => book.shelf === 'read')
-      });
+      let map = {};
+      books.forEach(book => map[book.id] = book);
+      this.setState({idToBookObj: map});
     });
   }
 
-  moveTo = (book, sourceShelf, targetShelf) => {
+  changeShelf = (book, targetShelf) => {
     book.shelf = targetShelf;
-    if (targetShelf === 'none' && sourceShelf !== 'none') {
-      this.setState(
-        {
-          [sourceShelf]: this.state[sourceShelf].filter(b => b.id !== book.id),
-        });
-      BooksAPI.update(book, targetShelf);
-      return;
-    }
-    if (sourceShelf !== 'none') {
-      this.setState(
-        {
-          [sourceShelf]: this.state[sourceShelf].filter(b => b.id !== book.id),
-          [targetShelf]: this.state[targetShelf].concat([book])
-        });
-    } else {
-      this.setState(
-        {
-          [targetShelf]: this.state[targetShelf].concat([book])
-        });
-    }
+    const map = this.state.idToBookObj;
+    map[book.id] = book;
+    this.setState({
+      idToBookObj: map
+    });
     BooksAPI.update(book, targetShelf);
   };
 
+  getShelvesBookList = () => {
+    const idToBookObj = this.state.idToBookObj;
+    const shelves = {
+      currentlyReading: [],
+      wantToRead: [],
+      read: []
+    };
+    Object.keys(idToBookObj).forEach((id) => {
+      const shelf = idToBookObj[id].shelf;
+      const book = idToBookObj[id];
+      shelf !== 'none' && shelves[shelf].push(book);
+    });
+    return shelves;
+  };
+
   render() {
+    const {currentlyReading, wantToRead, read} = this.getShelvesBookList();
     return (
       <div className="app">
-        <Route path='/search' render={() => (<Search moveTo={this.moveTo}/>)}/>
+        <Route path='/search' render={() =>
+          (<Search changeShelf={this.changeShelf} idToBookObj={this.state.idToBookObj}/>)}
+        />
 
         <Route exact path='/' render={() => (
           <div className="list-books">
@@ -59,9 +58,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <BookShelf shelfName='Currently Reading' bookList={this.state.currentlyReading} moveTo={this.moveTo}/>
-                <BookShelf shelfName='Want to Read' bookList={this.state.wantToRead} moveTo={this.moveTo}/>
-                <BookShelf shelfName='Read' bookList={this.state.read} moveTo={this.moveTo}/>
+                <BookShelf shelfName='Currently Reading' bookList={currentlyReading} changeShelf={this.changeShelf}/>
+                <BookShelf shelfName='Want to Read' bookList={wantToRead} changeShelf={this.changeShelf}/>
+                <BookShelf shelfName='Read' bookList={read} changeShelf={this.changeShelf}/>
               </div>
             </div>
             <div className="open-search">

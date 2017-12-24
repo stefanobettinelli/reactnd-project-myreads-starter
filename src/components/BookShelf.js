@@ -1,7 +1,7 @@
 import React from 'react';
 import Book from './Book';
 
-const BookShelf = ({shelfName, bookList, moveTo}) => {
+const BookShelf = ({shelfName, bookList, changeShelf}) => {
   return (
     <div className="bookshelf">
       <h2 className="bookshelf-title">{shelfName}</h2>
@@ -10,7 +10,7 @@ const BookShelf = ({shelfName, bookList, moveTo}) => {
           {
             bookList.map(book =>
               <li key={book.id}>
-                <Book book={book} moveTo={moveTo}/>
+                <Book book={book} changeShelf={changeShelf}/>
               </li>
             )
           }

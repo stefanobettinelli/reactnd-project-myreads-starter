@@ -22,24 +22,29 @@ class BooksApp extends React.Component {
     });
   }
 
-  moveTo = (book, targetShelf) => {
-    BooksAPI.update(book, targetShelf);
-    const currShelf = book.shelf;
+  moveTo = (book, sourceShelf, targetShelf) => {
     book.shelf = targetShelf;
-    if (currShelf) {
+    if (targetShelf === 'none' && sourceShelf !== 'none') {
       this.setState(
         {
-          [currShelf]: this.state[currShelf].filter(b => b.id !== book.id),
+          [sourceShelf]: this.state[sourceShelf].filter(b => b.id !== book.id),
+        });
+      BooksAPI.update(book, targetShelf);
+      return;
+    }
+    if (sourceShelf !== 'none') {
+      this.setState(
+        {
+          [sourceShelf]: this.state[sourceShelf].filter(b => b.id !== book.id),
           [targetShelf]: this.state[targetShelf].concat([book])
-        }
-      );
+        });
     } else {
       this.setState(
         {
           [targetShelf]: this.state[targetShelf].concat([book])
-        }
-      );
+        });
     }
+    BooksAPI.update(book, targetShelf);
   };
 
   render() {

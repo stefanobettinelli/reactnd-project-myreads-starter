@@ -16,10 +16,10 @@ class Search extends Component {
 
     query ?
       BooksAPI.search(query).then(books => {
-        books.forEach(book => {
-          idToBookObj[book.id] && (book.shelf = idToBookObj[book.id].shelf);
-        });
-        this.setState({books});
+        if (books.length) {
+          books.forEach(book => idToBookObj[book.id] && (book.shelf = idToBookObj[book.id].shelf));
+          this.setState({books});
+        }
       })
       :
       this.setState({books: []});

@@ -12,7 +12,7 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      let map = {};
+      const map = {};
       books.forEach(book => map[book.id] = book);
       this.setState({idToBookObj: map});
     });

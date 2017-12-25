@@ -12,19 +12,16 @@ class Search extends Component {
   updateQuery = (query) => {
     const idToBookObj = this.props.idToBookObj;
     this.setState({query: query.trim()});
-    if (query.length > 0) {
+
+    query ?
       BooksAPI.search(query).then(books => {
-          if (books.length > 0) {
-            books.forEach(book => {
-              idToBookObj[book.id] && (book.shelf = idToBookObj[book.id].shelf);
-            });
-            this.setState({books});
-          }
-        }
-      );
-    } else {
+        books.forEach(book => {
+          idToBookObj[book.id] && (book.shelf = idToBookObj[book.id].shelf);
+        });
+        this.setState({books});
+      })
+      :
       this.setState({books: []});
-    }
   };
 
   render() {

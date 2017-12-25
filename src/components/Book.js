@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const Book = (props) => {
   const {title, authors, imageLinks, shelf} = props.book;
@@ -27,6 +28,11 @@ const Book = (props) => {
       {authors && authors.map((auth, ind) => <div key={ind} className="book-authors">{auth}</div>)}
     </div>
   );
+};
+
+Book.propTypes = {
+  book: PropTypes.object.isRequired,
+  changeShelf: PropTypes.func.isRequired
 };
 
 export default Book;

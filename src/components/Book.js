@@ -5,8 +5,6 @@ const Book = (props) => {
   const {title, authors, imageLinks, shelf} = props.book;
   const changeShelf = props.changeShelf;
   const style = {
-    width: 128,
-    height: 193,
     backgroundImage: `url(${imageLinks && (imageLinks.thumbnail || imageLinks.smallThumbnail)})`
   };
   return (

@@ -19,13 +19,14 @@ class BooksApp extends React.Component {
   }
 
   changeShelf = (book, targetShelf) => {
-    book.shelf = targetShelf;
-    const map = this.state.idToBookObj;
-    map[book.id] = book;
-    this.setState({
-      idToBookObj: map
-    });
-    BooksAPI.update(book, targetShelf);
+    BooksAPI.update(book, targetShelf).then(() => {
+      book.shelf = targetShelf;
+      const map = this.state.idToBookObj;
+      map[book.id] = book;
+      this.setState({
+        idToBookObj: map
+      });
+    })
   };
 
   getShelvesBookList = () => {

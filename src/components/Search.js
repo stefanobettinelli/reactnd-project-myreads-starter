@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import {Debounce} from 'react-throttle';
 import Book from './Book';
 import * as BooksAPI from '../BooksAPI';
 import PropTypes from 'prop-types';
@@ -11,8 +12,9 @@ class Search extends Component {
   };
 
   updateQuery = (query) => {
+    console.log('update query');
     const idToBookObj = this.props.idToBookObj;
-    this.setState({query: query.trim()});
+    this.setState({query: query});
 
     query ?
       BooksAPI.search(query).then(books => {
@@ -26,16 +28,18 @@ class Search extends Component {
   };
 
   render() {
-    const {books, query} = this.state;
+    const {books} = this.state;
     return (
       <div className="search-books">
         <div className="search-books-bar">
           <Link to='/' className="close-search">Close</Link>
           <div className="search-books-input-wrapper">
-            <input
-              type="text" placeholder="Search by title or author"
-              value={query} onChange={(e) => this.updateQuery(e.target.value)}
-            />
+            <Debounce time='400' handler='onChange'>
+              <input
+                type="text" placeholder="Search by title or author"
+                onChange={(e) => this.updateQuery(e.target.value)}
+              />
+            </Debounce>
           </div>
         </div>
         <div className="search-books-results">
